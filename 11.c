@@ -1,149 +1,162 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include <locale.h>
-#include <windows.h>
-
-//Sistema de gestão de notas de alunos.
-
-// Estrutura do aluno
-struct Aluno {
-    char nome[50];
-    float notas[4];
-    float nota_total;
-    float media;
-    char resultado[50];
-};
-
-int quantidade_alunos = 5;
-
-// Função para calcular a nota total e a média de cada aluno
-void calcular_as_notas(struct Aluno alunos[], int quantidade){
-	int i=0, j=0;
-    for (i = 0; i < quantidade; i++){
-        alunos[i].nota_total = 0;
-        for (j = 0; j < 4; j++){
-            alunos[i].nota_total += alunos[i].notas[j];
-        }
-        alunos[i].media = alunos[i].nota_total / 4;
-    }
-}
-
-// Função para calcular a situação do aluno
-void situacao_do_aluno(struct Aluno alunos[], int quantidade){
-	int i = 0;
-    for (i = 0; i < quantidade; i++) {
-        if (alunos[i].media < 4) {
-            strcpy(alunos[i].resultado, "Reprovado");
-        } else if (alunos[i].media >= 4 && alunos[i].media < 6) {
-            strcpy(alunos[i].resultado, "Recuperação");
-        } else {
-            strcpy(alunos[i].resultado, "Aprovado");
-        }
-    }
-}
-
-// Função para exibir as informações do aluno
-void exibir_as_informacoes(struct Aluno alunos[], int quantidade){
-	int i=0, j=0;
-    for (i = 0; i < quantidade; i++) {
-        printf("Aluno: %s\n", alunos[i].nome);
-        printf("Notas: ");
-        for (j=0; j < 4; j++){
-            printf("%.2f, ", alunos[i].notas[j]);
-        }
-        printf("Nota total: %.2f\n", alunos[i].nota_total);
-        printf("Média: %.2f\n", alunos[i].media);
-        printf("Situação do aluno: %s\n\n", alunos[i].resultado);
-    }
-}
-
-void cadastro_das_notas(struct Aluno alunos[], int quantidade) {
-    system("cls");
-    printf("Cadastro de Notas/Alunos\n");
-    int i=0, j=0;
-    for (i = 0; i < quantidade; i++){
-        printf("Digite o nome do aluno - %d\n", (i+1));
-        scanf("%s", alunos[i].nome);
-        printf("\n");
-        for (j = 0; j < 4; j++){
-            float nota;
-            do {
-                printf("Digite a nota %d do aluno %s: ", j + 1, alunos[i].nome);
-                scanf("%f", &nota);
-                if (nota < 0 || nota > 10){
-                    printf("Nota inválida! Por favor, digite uma nota com o valor entre 0 e 10.\n");
-                }
-            } while (nota < 0 || nota > 10);
-            alunos[i].notas[j] = nota;
-        }
-        printf("\n");
-    }
-    printf("\n");
-    calcular_as_notas(alunos, quantidade);
-    situacao_do_aluno(alunos, quantidade);
-    exibir_as_informacoes(alunos, quantidade);
-    system("pause");
-    return;
-}
-
-void alteracao_notas(struct Aluno alunos[], int quantidade) {
-    system("cls");
-    printf("Alteração de Notas/Alunos\n");
-    char nome_aluno[50];
-    printf("Digite o nome do aluno que deseja alterar o resultado: ");
-    scanf("%s", nome_aluno);
-
-    int encontrado = 0;
-    int i = 0;
-    for (i = 0; i < quantidade; i++) {
-        if (strcmp(alunos[i].nome, nome_aluno) == 0) {
-            encontrado = 1;
-            printf("Situação atual do aluno %s: %s\n", alunos[i].nome, alunos[i].resultado);
-            printf("Digite o novo resultado para o aluno %s (Aprovado, Reprovado, Recuperação): ", alunos[i].nome);
-            scanf("%s", alunos[i].resultado);
-            printf("Resultado do aluno %s alterado para: %s\n", alunos[i].nome, alunos[i].resultado);
-            break;
-        }
-    }
-    if (!encontrado) {
-        printf("Aluno não encontrado.\n");
-    }
-
-    system("pause");
-    return;
-}
+#include <unistd.h>
+//#include <windows.h>
 
 int main() {
-    struct Aluno alunos[5];
-    setlocale(LC_ALL, "");
+    setlocale(LC_ALL, "Portuguese");
+
+    printf("Carregando o sistema, por favor aguarde...\n");
+    sleep(3);
+    //Sleep(500);
 
     int opcao = 0;
-    printf("Carregando o sistema... aguarde\n");
-    Sleep(500);
 
-    while (opcao != 3) {
+    float nota1, nota2, nota3, nota4;
+    float soma, media;
+
+    do {
         system("cls");
-        printf("Bem vindo ao menu do programa\n\n");
-        printf("Menu\n");
-        printf("----\n");
-        printf("1 - Cadastro de Notas/Alunos\n");
-        printf("2 - Alteração de Notas/Alunos\n");
-        printf("3 - Sair\n\n");
-        printf("Opção: ");
+        printf("\nMENU:\n");
+        printf("------\n");
+        printf("1- Cadastro de Notas\n ");
+        printf("2- Alteração de Notas\n");
+        printf("3- Sair\n\n");
+        printf("Escolha uma opção:\n");
         scanf("%d", &opcao);
 
-        if (opcao == 1) {
-            cadastro_das_notas(alunos, quantidade_alunos);
-        } else if (opcao == 2) {
-            alteracao_notas(alunos, quantidade_alunos);
-        } else if (opcao == 3) {
-            break;
-        } else {
-            printf("Opção inválida! Tente novamente.\n");
-            Sleep(1000);
-        }
-    }
+        switch (opcao) {
+            case 1:
+                system("cls");
+                printf("\nCadastro de Notas\n\n\n");
 
-return 0;
+                printf("Digite as 4 notas do aluno (elas devem ser de 0 a 10)\n");
+
+                soma = 0;
+                for (int i = 0; i < 5; i++) {
+                    printf("\n\nAluno %d: \n", i + 1);
+                    do {
+                        printf("Nota 1: ");
+                        scanf("%f", &nota1);
+                        if (nota1 < 0 || nota1 > 10) {
+                            printf("Nota inválida! Insira uma nota entre 0 e 10.\n");
+                        }
+                    } while (nota1 < 0 || nota1 > 10);
+                    
+                    do {
+                        printf("Nota 2: ");
+                        scanf("%f", &nota2);
+                        if (nota2 < 0 || nota2 > 10) {
+                            printf("Nota inválida! Insira uma nota entre 0 e 10.\n");
+                        }
+                    } while (nota2 < 0 || nota2 > 10);
+                    
+                    do {
+                        printf("Nota 3: ");
+                        scanf("%f", &nota3);
+                        if (nota3 < 0 || nota3 > 10) {
+                            printf("Nota inválida! Insira uma nota entre 0 e 10.\n");
+                        }
+                    } while (nota3 < 0 || nota3 > 10);
+                    
+                    do {
+                        printf("Nota 4: ");
+                        scanf("%f", &nota4);
+                        if (nota4 < 0 || nota4 > 10) {
+                            printf("Nota inválida! Insira uma nota entre 0 e 10.\n");
+                        }
+                    } while (nota4 < 0 || nota4 > 10);
+
+                    soma = nota1 + nota2 + nota3 + nota4;
+                    media = soma / 4;
+
+                    printf("Soma das notas: %.2f\n", soma);
+                    printf("Média das notas: %.2f\n", media);
+
+                    if (media >= 6) {
+                        printf("Situação: APROVADO\n");
+                    } else if (media < 4) {
+                        printf("Situação: REPROVADO\n");
+                    } else {
+                        printf("Situação: RECUPERAÇÃO\n");
+                    }
+                }
+
+                break;
+
+            case 2:
+                system("cls");
+                printf("\nAlteração de Notas\n\n\n");
+
+                int aluno;
+                printf("Digite o número do aluno que deseja alterar as notas (1 a 5):\n\n ");
+                scanf("%d", &aluno);
+
+                if (aluno < 1 || aluno > 5) {
+                    printf("Número de aluno inválido.\n\n");
+                    break;
+                }
+
+                printf("Digite as novas notas do aluno %d:\n\n", aluno);
+
+                do {
+                    printf("Nota 1: ");
+                    scanf("%f", &nota1);
+                    if (nota1 < 0 || nota1 > 10) {
+                        printf("Nota inválida! Insira uma nota entre 0 e 10.\n");
+                    }
+                } while (nota1 < 0 || nota1 > 10);
+                
+                do {
+                    printf("Nota 2: ");
+                    scanf("%f", &nota2);
+                    if (nota2 < 0 || nota2 > 10) {
+                        printf("Nota inválida! Insira uma nota entre 0 e 10.\n");
+                    }
+                } while (nota2 < 0 || nota2 > 10);
+                
+                do {
+                    printf("Nota 3: ");
+                    scanf("%f", &nota3);
+                    if (nota3 < 0 || nota3 > 10) {
+                        printf("Nota inválida! Insira uma nota entre 0 e 10.\n");
+                    }
+                } while (nota3 < 0 || nota3 > 10);
+                
+                do {
+                    printf("Nota 4: ");
+                    scanf("%f", &nota4);
+                    if (nota4 < 0 || nota4 > 10) {
+                        printf("Nota inválida! Insira uma nota entre 0 e 10.\n");
+                    }
+                } while (nota4 < 0 || nota4 > 10);
+
+                soma = nota1 + nota2 + nota3 + nota4;
+                media = soma / 4;
+
+                printf("\nNova soma das notas: %.2f\n", soma);
+                printf("Nova média das notas: %.2f\n", media);
+
+                if (media >= 6) {
+                    printf("Nova Situação: APROVADO\n");
+                } else if (media < 4) {
+                    printf("Nova Situação: REPROVADO\n");
+                } else {
+                    printf("Nova Situação: RECUPERAÇÃO\n");
+                }
+
+                break;
+
+            case 3:
+                printf("Você Saiu do Programa!\n");
+                break;
+
+            default:
+                printf("Opção Inválida!\n");
+        }
+
+    } while (opcao != 3);
+
+    return 0;
 }
