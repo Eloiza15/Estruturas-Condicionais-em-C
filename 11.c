@@ -1,17 +1,20 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <locale.h>
-#include <unistd.h>
-//#include <windows.h>
+//#include <unistd.h>
+#include <windows.h>
+
+//SISTEMA DE GESTÃO DE NOTAS
 
 int main() {
     setlocale(LC_ALL, "Portuguese");
 
     printf("Carregando o sistema, por favor aguarde...\n");
-    sleep(3);
-    //Sleep(500);
+    //sleep(3);
+    Sleep(500);
 
     int opcao = 0;
+    char nome[100];
 
     float nota1, nota2, nota3, nota4;
     float soma, media;
@@ -36,6 +39,8 @@ int main() {
                 soma = 0;
                 for (int i = 0; i < 5; i++) {
                     printf("\n\nAluno %d: \n", i + 1);
+                    printf("Qual é o nome do aluno(a):", i + 1);
+                    scanf("%s", &nome);
                     do {
                         printf("Nota 1: ");
                         scanf("%f", &nota1);
@@ -82,7 +87,7 @@ int main() {
                         printf("Situação: RECUPERAÇÃO\n");
                     }
                 }
-
+				system("pause");
                 break;
 
             case 2:
@@ -95,6 +100,7 @@ int main() {
 
                 if (aluno < 1 || aluno > 5) {
                     printf("Número de aluno inválido.\n\n");
+                    system("pause");
                     break;
                 }
 
@@ -145,7 +151,7 @@ int main() {
                 } else {
                     printf("Nova Situação: RECUPERAÇÃO\n");
                 }
-
+	            system("pause");
                 break;
 
             case 3:
@@ -154,6 +160,7 @@ int main() {
 
             default:
                 printf("Opção Inválida!\n");
+                system("pause");
         }
 
     } while (opcao != 3);
